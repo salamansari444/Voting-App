@@ -19,25 +19,25 @@
 		<table align="center">
 		<tr>
 		<td>
-		<input type="radio" name="c1" value="1">Candidate 1
+		<input type="radio" name="c1" value="candidate1">Candidate 1
 		</td>
 		</tr>
 		
 		<tr>
 		<td>
-		<input type="radio" name="c1"  value="2" >Candidate 2
+		<input type="radio" name="c1"  value="candidate2" >Candidate 2
 		</td>
 		</tr>
 		
 		<tr>
 		<td>
-		<input type="radio" name="c1" value="3" >Candidate 3
+		<input type="radio" name="c1" value="candidate3" >Candidate 3
 		</td>
 		</tr>
 		
 		<tr>
 		<td>
-		<input type="radio" name="c1" value="4" >Candidate 4
+		<input type="radio" name="c1" value="candidate4" >Candidate 4
 		</td>
 		</tr>
 		

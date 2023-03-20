@@ -10,7 +10,7 @@
 
 	<h1 style='text-align: center;'>Voting Succesfull.....</h1>
 
-	<form action="./controller/logout" method="post">
+	<form action="./logout" method="post">
 	<input type="submit" value="Logout">
 	
 	

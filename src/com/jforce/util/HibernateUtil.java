@@ -6,6 +6,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
+import com.jforce.dto.Candidate;
 import com.jforce.dto.Voter;
 
 public class HibernateUtil implements Serializable {
@@ -22,7 +23,7 @@ public class HibernateUtil implements Serializable {
 
 	static {
 		sessionFactory = new Configuration().configure().
-				addAnnotatedClass(Voter.class).
+				addAnnotatedClass(Voter.class).addAnnotatedClass(Candidate.class).
 				buildSessionFactory();
 	}
 

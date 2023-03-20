@@ -2,6 +2,7 @@ package com.jforce.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -11,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.jforce.dto.Candidate;
 import com.jforce.dto.Voter;
 import com.jforce.service.IVoterService;
 import com.jforce.servicefactory.VoterServiceFactory;
@@ -41,12 +43,32 @@ public class MainController extends HttpServlet {
 
 		IVoterService voterService = VoterServiceFactory.getVoterServiceBean();
 
+		if (request.getRequestURI().endsWith("admin")) {
+
+			String username = request.getParameter("username");
+			String password = request.getParameter("password");
+			boolean validateAdmin = voterService.validateAdmin(username, password);
+			if (validateAdmin) {
+				System.out.println("trueeeeeeeeeeeeeeeeeeeee");
+				List<Candidate> candidates = voterService.fetchCandidates();
+				request.setAttribute("allCandidates", candidates);
+				RequestDispatcher requestDispatcher = request.getRequestDispatcher("../adminDashboard.jsp");
+				System.out.println("dispace to sdmin");
+
+				requestDispatcher.forward(request, response);
+
+			} else {
+				handler(request, response, "Invalid Credential..");
+			}
+
+		}
+
 		if (request.getRequestURI().endsWith("validatevote")) {
 
 			HttpSession session = request.getSession();
-			int optionId = Integer.parseInt(request.getParameter("c1"));
+			String candidate = request.getParameter("c1");
 			String username = (String) session.getAttribute("user");
-			System.out.println(optionId);
+			System.out.println(candidate);
 			System.out.println(username);
 			PrintWriter out = response.getWriter();
 			boolean msg = voterService.validateVote(username);
@@ -58,6 +80,7 @@ public class MainController extends HttpServlet {
 				System.out.println("Already Voted");
 			} else {
 
+				voterService.updateCandidate(candidate);
 				voterService.updateVote(username);
 
 				rd = request.getRequestDispatcher("../success.jsp");
@@ -86,7 +109,7 @@ public class MainController extends HttpServlet {
 				System.out.println("forwarded to login.jsp  succes added");
 
 //				out.println("<h1>SuccesFully Registered Please go back to login page</h1>");
-                 response.sendRedirect("../login.jsp");
+				response.sendRedirect("../login.jsp");
 //				out.println("<h1 style='color:green text-align:center;'> Register Successfull</h1> ");
 			} else if ("failed".equalsIgnoreCase(status)) {
 				String output = "faield registration";
@@ -128,6 +151,7 @@ public class MainController extends HttpServlet {
 		}
 
 		if (request.getRequestURI().endsWith("logout")) {
+			System.out.println("log out working...");
 			HttpSession session = request.getSession();
 			session.invalidate();
 			response.sendRedirect("../login.jsp");
@@ -137,6 +161,7 @@ public class MainController extends HttpServlet {
 	public void handler(HttpServletRequest request, HttpServletResponse response, String output)
 			throws ServletException, IOException {
 
+		System.out.println("handler");
 		request.setAttribute("output", output);
 		RequestDispatcher dispatcher = request.getRequestDispatcher("../invalid.jsp");
 		dispatcher.forward(request, response);

@@ -1,5 +1,6 @@
 package com.jforce.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -8,6 +9,7 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
+import com.jforce.dto.Candidate;
 import com.jforce.dto.Voter;
 import com.jforce.util.HibernateUtil;
 
@@ -77,22 +79,63 @@ public class VoterDaoImpl implements IVoterDao {
 		return false;
 
 	}
-	
 
 	@Override
-	public void updateVote(String username){
-		
-	Transaction tx = session.beginTransaction();	
+	public void updateVote(String username) {
+
+		Transaction tx = session.beginTransaction();
 
 		Voter voter = session.get(Voter.class, username);
-		
+
 		voter.setVoted(1);
 		session.update(voter);
 		tx.commit();
-		
 
-		
-		
+	}
+
+	@Override
+	public void updateCandidate(String candidate) {
+		// TODO Auto-generated method stub
+		Transaction tx = session.beginTransaction();
+		Candidate cand = session.get(Candidate.class, candidate);
+		if (cand == null) {
+			Candidate can = new Candidate();
+			can.setCandidateName(candidate);
+			can.setVoteCount(1);
+			session.merge(can);
+
+		} else {
+
+			Integer currCount = cand.getVoteCount() + 1;
+			cand.setVoteCount(currCount);
+			session.merge(cand);
+		}
+		tx.commit();
+
+	}
+
+	@Override
+	public boolean validateAdmin(String username, String password) {
+
+		String admin = "admin";
+		String pass = "admin";
+
+		if (username.equals(admin) && password.equals(pass))
+			return true;
+
+		return false;
+	}
+
+	@Override
+	public List<Candidate> fetchCandidates() {
+		// TODO Auto-generated method stub
+
+		Query query = session.createQuery("from com.jforce.dto.Candidate");
+
+		List<Candidate> resultList = query.getResultList();
+		resultList.forEach(System.out::println);
+
+		return resultList;
 	}
 
 }
